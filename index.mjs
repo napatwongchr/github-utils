@@ -4,7 +4,7 @@
 import { Octokit } from "octokit";
 
 const octokit = new Octokit({
-  auth: "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",
+  auth: process.env.GH_PERSONAL_TOKEN,
 });
 
 // Goal: to delete repo created by cohort 2022.1 and 2022.2
