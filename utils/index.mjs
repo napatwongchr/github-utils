@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import { Octokit } from "octokit";
+
 dotenv.config();
 
 const octokit = new Octokit({

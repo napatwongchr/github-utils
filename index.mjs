@@ -9,12 +9,6 @@ import {
   getTeams,
 } from "./utils/index.mjs";
 
-dotenv.config();
-
-const octokit = new Octokit({
-  auth: process.env.GH_PERSONAL_TOKEN,
-});
-
 // Goal: to delete repo created by cohort 2022.1 and 2022.2
 // Steps
 // 1) list all the team except "TechUp Team"
@@ -31,37 +25,39 @@ const teamList = await getTeams({
   per_page: 10,
 });
 
-teamList.data.forEach(async (team) => {
-  const teamRepos = await getTeamRepos({
-    org,
-    team_slug: team.slug,
-  });
-
-  const regex = /GitHub Classroom/i;
-
-  teamRepos.data
-    .filter((repo) => {
-      return regex.test(repo.description);
-    })
-    .map((repo) => {
-      return {
-        name: repo.name,
-        description: repo.description,
-      };
-    })
-    .forEach(async (repo) => {
-      // await deleteTeamRepo( {
-      //   org: org,
-      //   team_slug: team.slug,
-      //   owner: org,
-      //   repo: "REPO",
-      // })
-      console.log(`removed repo: ${repo.name} from team: ${team.name}`);
-
-      // await deleteTeam({
-      //   org: org,
-      //   team_slug: team.slug,
-      // })
-      console.log(`removed team: ${team.name} \n`);
+teamList.data
+  // .filter((team) => team.slug !== "Aun-Pok")
+  .forEach(async (team) => {
+    const teamRepos = await getTeamRepos({
+      org,
+      team_slug: team.slug,
     });
-});
+
+    const regex = /GitHub Classroom/i;
+
+    teamRepos.data
+      .filter((repo) => {
+        return regex.test(repo.description);
+      })
+      .map((repo) => {
+        return {
+          name: repo.name,
+          description: repo.description,
+        };
+      })
+      .forEach(async (repo) => {
+        // await deleteTeamRepo( {
+        //   org: org,
+        //   team_slug: team.slug,
+        //   owner: org,
+        //   repo: "REPO",
+        // })
+        console.log(`removed repo: ${repo.name} from team: ${team.name}`);
+
+        // await deleteTeam({
+        //   org: org,
+        //   team_slug: team.slug,
+        // })
+        console.log(`removed team: ${team.name} \n`);
+      });
+  });
